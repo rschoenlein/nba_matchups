@@ -1,36 +1,55 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render
+from django.urls import reverse
+from django.views import generic
+
 from .models import Team, Player
 from .forms import TeamForm
-
-# Create your views here.
-
+from .scrape import Scraper
 
 
-#TODO use TeamForm object form to get data from user
-#TODO create Team objecte team_1 and team_2 from form
 
-def index(request):
-    form = TeamForm(request.GET)
 
-    context = {'form': form}
+class IndexView(generic.ListView):
 
-    return render(request, 'matchups/index.html', context = context)
+    template_name = 'matchups/index.html'
 
-def results(request):
+    def get(self, request):
 
-    query_set = []
-    query_set.append(request.GET.get('q1'))
-    query_set.append(request.GET.get('q2'))
+        #create form and pass it to index.html
+        form = TeamForm(request.GET)
 
-    team_1 = Team(name = query_set[0])
-    team_2 = Team(name = query_set[1])
+        context = {'form': form}
 
-    context = {
-        'team_1': team_1,
-        'team_2': team_2
-    }
+        return render(request, self.template_name, context = context)
 
-    return render(request, 'matchups/results.html', context = context)
+
+class ResultsView(generic.ListView):
+
+    template_name = 'matchups/results.html'
+
+    def get(self, request):
+
+        #create team objects based on GET query
+        query_set = []
+        query_set.append(request.GET.get('q1'))
+        query_set.append(request.GET.get('q2'))
+
+        team_1 = Team(name = query_set[0])
+        team_2 = Team(name = query_set[1])
+
+        #TODO create Scraper object
+        #TODO matchup object from Scraper member functions
+
+        scraper = Scraper()
+        scraper.search()
+
+        #pass team objects to results.html
+        context = {
+            'team_1': team_1,
+            'team_2': team_2
+        }
+
+        return render(request, self.template_name, context = context)

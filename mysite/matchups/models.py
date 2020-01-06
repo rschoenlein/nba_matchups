@@ -77,6 +77,8 @@ class Team(models.Model):
         "Wizards": "WAS"
     }
 
+    game_score = models.DecimalField(decimal_places = 3, max_digits = 6, default = 1.0)
+
     def get_city(self):
         return team_cities[self.name]
 
@@ -109,7 +111,7 @@ class Player(models.Model):
     def __str__(self):
         return self.name
 
-
+#TODO make this class represent a simulated game between two team
 class Matchup(models.Model):
     result = models.CharField(max_length = 200)
 
