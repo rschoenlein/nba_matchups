@@ -5,11 +5,9 @@ from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.views import generic
 
-from .models import Team, Player
+from .models import Team, Player, Matchup
 from .forms import TeamForm
-from .scrape import Scraper
-
-
+from .scraper import Scraper
 
 
 class IndexView(generic.ListView):
@@ -37,19 +35,28 @@ class ResultsView(generic.ListView):
         query_set.append(request.GET.get('q1'))
         query_set.append(request.GET.get('q2'))
 
-        team_1 = Team(name = query_set[0])
-        team_2 = Team(name = query_set[1])
 
-        #TODO create Scraper object
-        #TODO matchup object from Scraper member functions
+        team_1 = Team.objects.create_team(query_set[0])
+        team_2 = Team.objects.create_team(query_set[1])
 
-        scraper = Scraper()
-        scraper.search()
+        scraper = Scraper(team_1)
+        scraper.populate_team()
+        print(team_1.game_score)
 
+        scraper = Scraper(team_2)
+        scraper.populate_team()
+        print(team_2.game_score)
+
+        #TODO calculate winner with matchup object
+        matchup = Matchup.objects.create_matchup(team_1, team_2)
+        winner = matchup.get_winner()
+
+        #TODO pass matchup object to results.html instead
         #pass team objects to results.html
         context = {
             'team_1': team_1,
-            'team_2': team_2
+            'team_2': team_2,
+            'winner': winner
         }
 
         return render(request, self.template_name, context = context)
