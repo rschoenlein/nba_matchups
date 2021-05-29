@@ -36,27 +36,28 @@ class ResultsView(generic.ListView):
         query_set.append(request.GET.get('q2'))
 
 
+        predicted_score = []
         team_1 = Team.objects.create_team(query_set[0])
         team_2 = Team.objects.create_team(query_set[1])
 
         scraper = Scraper(team_1)
         scraper.populate_team()
-        print(team_1.game_score)
+        predicted_score.append(1.4 * team_1.game_score)
 
         scraper = Scraper(team_2)
         scraper.populate_team()
-        print(team_2.game_score)
+        predicted_score.append(1.4 * team_2.game_score)
 
-        #TODO calculate winner with matchup object
         matchup = Matchup.objects.create_matchup(team_1, team_2)
         winner = matchup.get_winner()
 
-        #TODO pass matchup object to results.html instead
-        #pass team objects to results.html
+        #pass teams, winner and scores to results.html
         context = {
             'team_1': team_1,
             'team_2': team_2,
-            'winner': winner
+            'winner': winner,
+            'score_1': predicted_score[0],
+            'score_2': predicted_score[1]
         }
 
         return render(request, self.template_name, context = context)

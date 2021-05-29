@@ -17,6 +17,6 @@ from django.urls import include, path
 from django.contrib import admin
 
 urlpatterns = [
-    path('matchups/', include('matchups.urls')),
     path('admin/', admin.site.urls),
+    path('matchups/', include('matchups.urls'))
 ]
