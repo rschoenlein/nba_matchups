@@ -12,6 +12,7 @@ import re
 
 from .models import Team, Player
 
+#TODO change this to Scrapy implementation
 class Scraper():
 
     def __init__(self, team):
@@ -64,7 +65,6 @@ class Scraper():
             if stats_table is not None:
                 stats_table = stats_table.find_all("td", attrs={"class":"right"})
 
-
             player_tables.append(stats_table)
         browser.close()
 
@@ -74,6 +74,7 @@ class Scraper():
     def populate_player_stats(self, table, player):
 
         for cell in table:
+            print(cell)
             for field in player._meta.get_fields():
                 if str(field.name) in str(cell):
                     stat = re.findall("\d+\.\d+", str(cell))
@@ -95,6 +96,6 @@ class Scraper():
                 player = self.populate_player_stats(player_tables[i], player)
                 tot_game_score += player.game_score()
                 print(player.game_score())
-                
+
         setattr(self.team, 'game_score', tot_game_score)
         self.team.save()

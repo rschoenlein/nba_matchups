@@ -140,7 +140,6 @@ class MatchupManager(models.Manager):
 
         return matchup
 
-#TODO make this class represent a simulated game between two team
 class Matchup(models.Model):
 
     objects = MatchupManager()
