@@ -55,6 +55,7 @@ class Team(models.Model):
 
     game_score = models.DecimalField(decimal_places = 3, max_digits = 6, default = 1.0)
 
+    #team name to city dictionary
     team_cities = {
         "Celtics": "BOS",
         "Hawks": "ATL",
@@ -93,6 +94,7 @@ class Team(models.Model):
 
     def __str__(self):
         return self.name
+
 
 # manages Player objects
 class PlayerManager(models.Manager):
