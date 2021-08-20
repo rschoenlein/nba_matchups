@@ -1,3 +1,4 @@
+#TODO eliminate unneeded imports
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from bs4 import BeautifulSoup
@@ -12,7 +13,7 @@ import re
 
 from .models import Team, Player
 
-#TODO change this to Scrapy implementation
+#TODO change this to use Scrapy implementation
 class Scraper():
 
     def __init__(self, team):
@@ -26,7 +27,7 @@ class Scraper():
         page = urlopen("https://www.basketball-reference.com/", cafile=certifi.where())
         soup = BeautifulSoup(page, 'html.parser')
 
-        # go thru soup and extract json object containing list of players
+        #go thru soup and extract json object containing list of players
         script_tags = soup.findAll("script", class_= "allowed")
 
         #format json
